@@ -35,8 +35,12 @@ https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#
   ssl certificate template: cred-template
   ssl require client certificate: true
   ```
-  At the bottom, click Show and check the `Acme Corp` checkbox.
+  At the bottom, click Show and check the `Acme Corp` checkbox. Click OK to save.
 
 7. Run the following:
 
   `node clientML.js`
+  
+8. To delete the REST server and database, run the following:
+
+  `node teardown.js`
