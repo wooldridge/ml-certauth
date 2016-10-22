@@ -1,0 +1,198 @@
+<export><workspace name="Certificate Authentication"><query name="1. Create CA" focus="false" listorder="1" taborder="1" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Authority :)
+
+xquery version "1.0-ml";
+
+import module "http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";
+import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki.xqy";
+
+declare namespace x509 = "http://marklogic.com/xdmp/x509";
+
+let $keys := xdmp:rsa-generate()
+let $privkey := $keys[1]
+let $dum := xdmp:save("capriv.pkey", text{$privkey})
+let $pubkey := $keys[2]
+let $dum := xdmp:save("capub.pkey", text{$pubkey})
+let $subject :=
+  element x509:subject {
+	element x509:countryName      {"US"},
+	element x509:organizationName {"Acme Corp"},
+	element x509:commonName       {"Acme Corp CA"}
+  }
+let $x509 :=
+  element x509:cert {
+	element x509:version {2},
+	element x509:serialNumber {pki:integer-to-hex(xdmp:random())},
+	element x509:issuer {$subject/*},
+	element x509:validity {
+	  element x509:notBefore {fn:current-dateTime()},
+	  element x509:notAfter  {fn:current-dateTime() + xs:dayTimeDuration("P365D")}
+	},
+	$subject,
+	element x509:publicKey {$pubkey},
+	element x509:v3ext {
+	  element x509:basicConstraints {
+		attribute critical {"false"},
+		"CA:TRUE"
+	  },
+	  element x509:keyUsage {
+		attribute critical {"false"},
+		"Certificate Sign, CRL Sign"
+	  },
+	  element x509:nsCertType {
+		attribute critical {"false"},
+		"SSL Server"
+	  },
+	  element x509:subjectKeyIdentifier {
+		attribute critical {"false"},
+		pki:integer-to-hex(xdmp:random())
+	  }
+	}
+  }
+let $certificate := xdmp:x509-certificate-generate($x509, $privkey)
+let $dum := xdmp:save("ca.cer", text{$certificate})
+return
+  ( sec:create-credential(
+	  "acme-corp", "Acme Certificate Authority",
+	  (), (), $certificate, $privkey,
+	  fn:true(), (), xdmp:permission("admin", "read")),
+	pki:insert-trusted-certificates($certificate)
+  )
+</query><query name="2. Create Cert Template" focus="false" listorder="3" taborder="2" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Template :)
+
+xquery version "1.0-ml";
+
+import module "http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";
+import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki.xqy";
+
+declare namespace x509 = "http://marklogic.com/xdmp/x509";
+
+pki:insert-template(
+  pki:create-template(
+	"cred-template", "testing secure credentials",
+	(), (),
+	&lt;req xmlns="http://marklogic.com/xdmp/x509"&gt;
+	  &lt;version&gt;0&lt;/version&gt;
+	  &lt;subject&gt;
+		&lt;countryName&gt;US&lt;/countryName&gt;
+		&lt;stateOrProvinceName&gt;CA&lt;/stateOrProvinceName&gt;
+		&lt;localityName&gt;San Carlos&lt;/localityName&gt;
+		&lt;organizationName&gt;Acme Corp&lt;/organizationName&gt;
+	  &lt;/subject&gt;
+	  &lt;v3ext&gt;
+		&lt;nsCertType critical="false"&gt;SSL Server&lt;/nsCertType&gt;
+		&lt;subjectKeyIdentifier critical="false"&gt;{pki:integer-to-hex(xdmp:random())}&lt;/subjectKeyIdentifier&gt;
+	  &lt;/v3ext&gt;
+	&lt;/req&gt;))
+
+</query><query name="3. Create Host Template Signed by CA" focus="false" listorder="4" taborder="3" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a Host Template signed by the Certificate Authority :)
+
+xquery version "1.0-ml";
+
+import module "http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";
+(: Create Host Template Signed by Certificate Authority :)
+
+import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki.xqy";
+declare namespace x509 = "http://marklogic.com/xdmp/x509";
+
+let $csr-pem :=
+  xdmp:invoke-function(
+	function() {
+	  pki:generate-certificate-request(
+		pki:get-template-by-name("cred-template")/pki:template-id,
+		xdmp:host-name(), (), ())
+	},
+	&lt;options xmlns="xdmp:eval"&gt;
+	  &lt;transaction-mode&gt;update-auto-commit&lt;/transaction-mode&gt;
+	  &lt;isolation&gt;different-transaction&lt;/isolation&gt;
+	&lt;/options&gt;)
+let $csr-xml := xdmp:x509-request-extract($csr-pem)
+let $ca-xml :=
+  xdmp:x509-certificate-extract(
+	xdmp:credential(xdmp:credential-id("acme-corp"))
+	  /sec:credential-certificate)
+let $cert-xml :=
+  &lt;cert xmlns="http://marklogic.com/xdmp/x509"&gt;
+	&lt;version&gt;2&lt;/version&gt;
+	&lt;serialNumber&gt;{pki:integer-to-hex(xdmp:random())}&lt;/serialNumber&gt;
+	{$ca-xml/x509:issuer}
+	&lt;validity&gt;
+	  &lt;notBefore&gt;{fn:current-dateTime()}&lt;/notBefore&gt;
+	  &lt;notAfter&gt;{fn:current-dateTime() + xs:dayTimeDuration("P365D")}&lt;/notAfter&gt;
+	&lt;/validity&gt;
+	{$csr-xml/x509:subject}
+	{$csr-xml/x509:publicKey}
+	{$csr-xml/x509:v3ext}
+  &lt;/cert&gt;
+let $cert-pem :=
+  xdmp:x509-certificate-generate(
+	$cert-xml, (),
+	&lt;options xmlns="ssl:options"&gt;
+	  &lt;credential-id&gt;{xdmp:credential-id("acme-corp")}&lt;/credential-id&gt;
+	&lt;/options&gt;)
+return
+  xdmp:invoke-function(
+	function() {
+	  pki:insert-signed-certificates($cert-pem)
+	},
+	&lt;options xmlns="xdmp:eval"&gt;
+	  &lt;transaction-mode&gt;update-auto-commit&lt;/transaction-mode&gt;
+	  &lt;isolation&gt;different-transaction&lt;/isolation&gt;
+	&lt;/options&gt;)
+
+</query><query name="4. Create User Certificate" focus="true" listorder="5" taborder="4" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a User Certificate by specifying the common name :)
+(: Here the common name is 'portal' :)
+
+xquery version "1.0-ml";
+import module namespace sec = "http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";
+import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki.xqy";
+declare namespace x509 = "http://marklogic.com/xdmp/x509";
+	declare function local:create-credential(
+	  $sec-cred-name as xs:string,
+	  $username as xs:string,
+	  $password as xs:string,
+	  $common-name as xs:string,
+	  $validity as element(x509:validity)?,
+	  $auth-types as xs:string*
+	)
+	{
+	  let $keys := xdmp:rsa-generate()
+	  let $privkey := $keys[1]
+      let $dum := xdmp:save("portalpriv.pkey", text{$privkey})
+	  let $pubkey := $keys[2]
+	  let $dum := xdmp:save("portalpub.pkey", text{$pubkey})
+	  let $subject :=
+	    element x509:subject {
+	      element x509:countryName      {"US"},
+	      element x509:organizationName {"Acme Corp"},
+	      element x509:commonName       {$common-name}
+	    }
+	  let $x509 :=
+	    element x509:cert {
+	      element x509:version {2},
+	      element x509:serialNumber {pki:integer-to-hex(xdmp:random())},
+	      $validity,
+	      $subject,
+	      element x509:publicKey {$pubkey},
+	      element x509:v3ext {
+	        element x509:subjectKeyIdentifier {
+	          attribute critical {"false"},
+	          pki:integer-to-hex(xdmp:random())
+	        }
+	      }
+	    }
+	  let $certificate :=
+	    xdmp:x509-certificate-generate($x509, (),
+	      &lt;options xmlns="ssl:options"&gt;
+	        &lt;credential-id&gt;{xdmp:credential-id("acme-corp")}&lt;/credential-id&gt;
+	      &lt;/options&gt;)
+	  return
+	    xdmp:save("portal.cer", text{$certificate})
+	};
+  local:create-credential(
+  "only-certificate", "", "", "portal",
+  element x509:validity {
+	element x509:notBefore {fn:current-dateTime()},
+	element x509:notAfter  {fn:current-dateTime() + xs:dayTimeDuration("P365D")}
+  },
+  ("digest", "basic"))
+</query></workspace></export>
