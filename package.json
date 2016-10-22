@@ -1,0 +1,19 @@
+{
+  "name": "ml-certauth",
+  "version": "1.0.0",
+  "description": "Certificate security with MarkLogic and Node.js",
+  "main": "client1.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mike Wooldridge",
+  "license": "ISC",
+  "dependencies": {
+    "marklogic": "https://github.com/wooldridge/node-client-api#ea4/certauth",
+    "request": "^2.75.0",
+    "request-promise": "^4.1.1"
+  }
+}
