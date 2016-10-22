@@ -25,7 +25,7 @@ https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#
   `ca.cer`
   `portaltest.pfx`
   ```
-5. Copy `config_sample.js` to `config.js` and edit for your environment (/PATH/TO, ML_USER, ML_PASSWORD). Create a REST server and database by running:
+5. Copy `config_sample.js` to `config.js` and edit for your environment (/PATH/TO, HOSTNAME, ML_USER, ML_PASSWORD). Create a REST server and database by running:
 
   `node setup.js`
 
@@ -40,7 +40,7 @@ https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#
 7. Run the following:
 
   `node clientML.js`
-  
+
 8. To delete the REST server and database, run the following:
 
   `node teardown.js`

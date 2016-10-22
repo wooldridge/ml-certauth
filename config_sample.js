@@ -2,7 +2,7 @@ var config = {};
 
 config.path = "/PATH/TO/ml-certauth/"; // include trailing "/"
 
-config.host = "localhost";
+config.host = "HOSTNAME";
 
 config.database = {
   "name": "ml-certauth",
