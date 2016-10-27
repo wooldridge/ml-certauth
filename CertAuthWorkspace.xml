@@ -1,4 +1,4 @@
-<export><workspace name="Certificate Authentication"><query name="A. Create CA" focus="false" listorder="1" taborder="1" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Authority :)
+<export><workspace name="Certificate Authentication"><query name="A. Create CA" focus="true" listorder="1" taborder="1" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Authority :)
 
 xquery version "1.0-ml";
 
@@ -139,7 +139,7 @@ return
 	  &lt;isolation&gt;different-transaction&lt;/isolation&gt;
 	&lt;/options&gt;)
 
-</query><query name="D. Create User Certificate" focus="true" listorder="5" taborder="4" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a User Certificate by specifying the common name :)
+</query><query name="D. Create User Certificate" focus="false" listorder="5" taborder="4" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a User Certificate by specifying the common name :)
 (: Here the common name is 'portal' :)
 
 xquery version "1.0-ml";
