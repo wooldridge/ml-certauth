@@ -8,9 +8,9 @@ https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#
 
 ## Steps
 
-1. Run QConsole scripts in `CertAuthWorkspace.xml` against security database to generate Certificate Authority, certificates, and keys.
+1. Import `CertAuthWorkspace.xml` into QConsole and run the scripts against the Security database to generate a certificate authority, certificates, and keys.
 
-  All the certificates, private keys, and public keys are saved in the root directory of Marklogic (e.g., on a Mac, ~/Library/MarkLogic).
+  This configures MarkLogic for certificate authentication. Certificates, private keys, and public keys are saved in the root directory of Marklogic (e.g., on a Mac, ~/Library/MarkLogic) and in the Security database.
 
 2. Create a user named `portal` with a password `p` and appropriate privileges (e.g. `rest-reader`).
 
@@ -18,7 +18,7 @@ https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#
 
   `openssl pkcs12 -export -in portal.cer -inkey portalpriv.pkey -out portaltest.pfx`
 
-  A `portaltest.pfx` file is saved in the root directory.
+  A `portaltest.pfx` file is saved in the root directory. This packages both the user certificate and private key as a single file. 
 
 4. Copy the following files to the `ml-certauth` root folder:
   ```
@@ -37,7 +37,7 @@ https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#
   ```
   At the bottom, click Show and check the `Acme Corp` checkbox. Click OK to save.
 
-7. Run the following:
+7. Run the following to retrieve a document from the certificate-protected server:
 
   `node clientML.js`
 
