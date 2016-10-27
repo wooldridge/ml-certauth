@@ -21,7 +21,7 @@ var options2 = {
   port: config.database.port,
   user: 'portal',
   password: 'p',
-  authType: 'basic',
+  authType: 'digest',
   ssl: true,
   ca: fs.readFileSync('ca.cer'),
   pfx: fs.readFileSync('portaltest.pfx'),
