@@ -2,17 +2,33 @@ var config = require('./config'),
     marklogic = require('marklogic'),
     fs = require('fs');
 
-var db = marklogic.createDatabaseClient({
+// authentication = 'certificate'
+// require-client-certificate = true
+var options1 = {
   host: config.host,
   port: config.database.port,
-  user: config.auth.user,
-  password: config.auth.password,
   authType: 'certificate',
   ssl: true,
   ca: fs.readFileSync('ca.cer'),
   pfx: fs.readFileSync('portaltest.pfx'),
   passphrase: 'p'
-});
+};
+
+// authentication != 'certificate'
+// require-client-certificate = true
+var options2 = {
+  host: config.host,
+  port: config.database.port,
+  user: 'portal',
+  password: 'p',
+  authType: 'basic',
+  ssl: true,
+  ca: fs.readFileSync('ca.cer'),
+  pfx: fs.readFileSync('portaltest.pfx'),
+  passphrase: 'p'
+};
+
+var db = marklogic.createDatabaseClient(options2);
 
 db.setLogger('debug');
 
