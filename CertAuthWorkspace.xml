@@ -1,4 +1,4 @@
-<export><workspace name="Certificate Authentication"><query name="1. Create CA" focus="false" listorder="1" taborder="1" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Authority :)
+<export><workspace name="Certificate Authentication"><query name="A. Create CA" focus="false" listorder="1" taborder="1" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Authority :)
 
 xquery version "1.0-ml";
 
@@ -57,7 +57,7 @@ return
 	  fn:true(), (), xdmp:permission("admin", "read")),
 	pki:insert-trusted-certificates($certificate)
   )
-</query><query name="2. Create Cert Template" focus="false" listorder="3" taborder="2" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Template :)
+</query><query name="B. Create Cert Template" focus="false" listorder="3" taborder="2" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a Certificate Template :)
 
 xquery version "1.0-ml";
 
@@ -84,7 +84,7 @@ pki:insert-template(
 	  &lt;/v3ext&gt;
 	&lt;/req&gt;))
 
-</query><query name="3. Create Host Template Signed by CA" focus="false" listorder="4" taborder="3" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a Host Template signed by the Certificate Authority :)
+</query><query name="C. Create Host Template Signed by CA" focus="false" listorder="4" taborder="3" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a Host Template signed by the Certificate Authority :)
 
 xquery version "1.0-ml";
 
@@ -139,7 +139,7 @@ return
 	  &lt;isolation&gt;different-transaction&lt;/isolation&gt;
 	&lt;/options&gt;)
 
-</query><query name="4. Create User Certificate" focus="true" listorder="5" taborder="4" active="true" database="17541053255363311326" server="14531829774521553978" database-name="Security" server-name="Admin" mode="xquery">(: Create a User Certificate by specifying the common name :)
+</query><query name="D. Create User Certificate" focus="true" listorder="5" taborder="4" active="true" database-name="Security" server-name="Admin" mode="xquery">(: Create a User Certificate by specifying the common name :)
 (: Here the common name is 'portal' :)
 
 xquery version "1.0-ml";
@@ -195,4 +195,4 @@ declare namespace x509 = "http://marklogic.com/xdmp/x509";
 	element x509:notAfter  {fn:current-dateTime() + xs:dayTimeDuration("P365D")}
   },
   ("digest", "basic"))
-</query></workspace></export>
+</query><query name="Search for Acme certificates" focus="false" listorder="5" taborder="5" active="true" database-name="Security" server-name="Admin" mode="javascript">cts.search("acme")</query></workspace></export>
