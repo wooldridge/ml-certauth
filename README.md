@@ -6,6 +6,10 @@ Information on using certificate authentication with Node.js:
 
 https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#.gxmla9cbi
 
+Information on certificate authorities:
+
+http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
+
 ## Steps
 
 1. Run QConsole scripts in `CertAuthWorkspace.xml` against security database to generate Certificate Authority, certificates, and keys.
