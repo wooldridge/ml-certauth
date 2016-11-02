@@ -22,14 +22,14 @@ http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
 
   `openssl pkcs12 -export -in portal.cer -inkey portalpriv.pkey -out portaltest.pfx`
 
-  A `portaltest.pfx` file is saved in the root directory. This packages both the user certificate and private key as a single file. 
+  A `portaltest.pfx` file is saved in the root directory. This packages both the user certificate and private key as a single file.
 
 4. Copy the following files to the `ml-certauth` root folder:
   ```
   `ca.cer`
   `portaltest.pfx`
   ```
-5. Copy `config_sample.js` to `config.js` and edit for your environment (/PATH/TO, HOSTNAME, ML_USER, ML_PASSWORD). Create a REST server and database by running:
+5. Copy `config_sample.js` to `config.js` and edit for your environment (/PATH/TO/MARKLOGIC/, HOSTNAME, ML_USER, ML_PASSWORD). Create a REST server and database by running:
 
   `node setup.js`
 

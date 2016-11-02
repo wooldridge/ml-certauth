@@ -1,18 +1,30 @@
+var pjson = require('./package.json');
+var path = require('path');
+
 var config = {};
 
-config.path = "/PATH/TO/ml-certauth/"; // include trailing "/"
+config.path   = path.dirname(require.main.filename) + "/";
+
+// Path to root directory of MarkLogic, e.g.: "/Users/mary/Library/MarkLogic"
+config.mlpath = "/PATH/TO/MARKLOGIC/"; // include trailing "/"
 
 config.host = "HOSTNAME";
 
 config.database = {
-  "name": "ml-certauth",
+  "name": pjson.name,
   "port": 8565
 };
 
 config.security = {
-  "cert": "ca.cer",
-  "pfx": "portaltest.pfx"
+  cert: "ca.cer",
+  pfx: "portaltest.pfx"
 }
+
+config.user = {
+  name: "portal",
+  desc: "certificate auth user",
+  pass: "p"
+};
 
 config.auth = {
   user: 'ML_USER',
