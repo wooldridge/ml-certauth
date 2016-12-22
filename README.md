@@ -22,6 +22,8 @@ http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
 
   `openssl pkcs12 -export -in portal.cer -inkey portalpriv.pkey -out portaltest.pfx`
 
+  You will be prompted for an Export Password. Enter 'p' as the password.
+
   A `portaltest.pfx` file is saved in the root directory. This packages both the user certificate and private key as a single file.
 
 4. Copy the following files to the `ml-certauth` root folder:
@@ -39,7 +41,7 @@ http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
   ssl certificate template: cred-template
   ssl require client certificate: true
   ```
-  At the bottom, click Show and check the `Acme Corp` checkbox. Click OK to save.
+  At the bottom, click Show, click "Acme Corp", and check the checkbox. Click OK to save.
 
 7. Run the following to retrieve a document from the certificate-protected server:
 
