@@ -4,6 +4,7 @@ node_modules
 
 config.js
 
-ca.cer
-
-portaltest.pfx
+*.cer
+*.pkey
+*.pem
+*.pfx
