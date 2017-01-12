@@ -28,8 +28,9 @@ let $subject :=
   }
 let $x509 :=
   element x509:cert {
-  element x509:version {2},
-  element x509:serialNumber {pki:integer-to-hex(xdmp:random())},
+    element x509:version {2},
+    element x509:serialNumber {pki:integer-to-hex(xdmp:random())
+  },
   element x509:issuer {$subject/*},
   element x509:validity {
     element x509:notBefore {fn:current-dateTime()},
@@ -55,7 +56,7 @@ let $x509 :=
     pki:integer-to-hex(xdmp:random())
     }
   }
-  }
+}
 let $certificate := xdmp:x509-certificate-generate($x509, $privkey)
 let $dum := xdmp:save(concat($path, "ca.cer"), text{$certificate})
 return

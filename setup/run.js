@@ -20,18 +20,18 @@ var src = fs.readFileSync(
 
 var extVars = {};
 switch(script) {
-    case '1_CreateCA.xqy':
-        extVars = config2.ca;
-        break;
-    case '2_CreateTemplate.xqy':
-        extVars = config2.template;
-        break;
-    case '3_CreateHostTemplate.xqy':
-        extVars = config2.host;
-        break;
-    case '4_CreateUserCert.xqy':
-        extVars = config2.user;
-        break;
+  case '1_CreateCA.xqy':
+    extVars = config2.ca;
+    break;
+  case '2_CreateTemplate.xqy':
+    extVars = config2.template;
+    break;
+  case '3_CreateHostTemplate.xqy':
+    extVars = config2.host;
+    break;
+  case '4_CreateUserCert.xqy':
+    extVars = config2.user;
+    break;
 }
 
 fs.readFileSync(
