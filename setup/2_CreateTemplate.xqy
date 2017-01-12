@@ -7,17 +7,24 @@ import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki
 
 declare namespace x509 = "http://marklogic.com/xdmp/x509";
 
+declare variable $templateName as xs:string external;
+declare variable $description as xs:string external;
+declare variable $countryName as xs:string external;
+declare variable $stateOrProvinceName as xs:string external;
+declare variable $localityName as xs:string external;
+declare variable $organizationName as xs:string external;
+
 pki:insert-template(
   pki:create-template(
-  "cred-template", "testing secure credentials",
+  $templateName, $description,
   (), (),
   <req xmlns="http://marklogic.com/xdmp/x509">
     <version>0</version>
     <subject>
-    <countryName>US</countryName>
-    <stateOrProvinceName>CA</stateOrProvinceName>
-    <localityName>San Carlos</localityName>
-    <organizationName>Acme Corp</organizationName>
+    <countryName>{$countryName}</countryName>
+    <stateOrProvinceName>{$stateOrProvinceName}</stateOrProvinceName>
+    <localityName>{$localityName}</localityName>
+    <organizationName>{$organizationName}</organizationName>
     </subject>
     <v3ext>
     <nsCertType critical="false">SSL Server</nsCertType>

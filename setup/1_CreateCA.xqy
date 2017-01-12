@@ -7,16 +7,24 @@ import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki
 
 declare namespace x509 = "http://marklogic.com/xdmp/x509";
 
+declare variable $countryName as xs:string external;
+declare variable $organizationName as xs:string external;
+declare variable $commonName as xs:string external;
+declare variable $notAfter as xs:string external;
+declare variable $credName as xs:string external;
+declare variable $credDesc as xs:string external;
+declare variable $path as xs:string external;
+
 let $keys := xdmp:rsa-generate()
 let $privkey := $keys[1]
-let $dum := xdmp:save("capriv.pkey", text{$privkey})
+let $dum := xdmp:save(concat($path, "capriv.pkey"), text{$privkey})
 let $pubkey := $keys[2]
-let $dum := xdmp:save("capub.pkey", text{$pubkey})
+let $dum := xdmp:save(concat($path, "capub.pkey"), text{$pubkey})
 let $subject :=
   element x509:subject {
-  element x509:countryName      {"US"},
-  element x509:organizationName {"Acme Corp"},
-  element x509:commonName       {"Acme Corp CA"}
+  element x509:countryName      {$countryName},
+  element x509:organizationName {$organizationName},
+  element x509:commonName       {$commonName}
   }
 let $x509 :=
   element x509:cert {
@@ -25,7 +33,7 @@ let $x509 :=
   element x509:issuer {$subject/*},
   element x509:validity {
     element x509:notBefore {fn:current-dateTime()},
-    element x509:notAfter  {fn:current-dateTime() + xs:dayTimeDuration("P365D")}
+    element x509:notAfter  {fn:current-dateTime() + xs:dayTimeDuration($notAfter)}
   },
   $subject,
   element x509:publicKey {$pubkey},
@@ -49,10 +57,10 @@ let $x509 :=
   }
   }
 let $certificate := xdmp:x509-certificate-generate($x509, $privkey)
-let $dum := xdmp:save("ca.cer", text{$certificate})
+let $dum := xdmp:save(concat($path, "ca.cer"), text{$certificate})
 return
   ( sec:create-credential(
-    "acme-corp", "Acme Certificate Authority",
+    $credName, $credDesc,
     (), (), $certificate, $privkey,
     fn:true(), (), xdmp:permission("admin", "read")),
   pki:insert-trusted-certificates($certificate)
