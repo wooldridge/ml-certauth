@@ -20,7 +20,7 @@ var options2 = {
   host: config.host,
   port: config.database.port,
   user: 'portal',
-  password: 'p',
+  password: 'portal',
   authType: 'digest',
   ssl: true,
   ca: fs.readFileSync('ca.cer'),
