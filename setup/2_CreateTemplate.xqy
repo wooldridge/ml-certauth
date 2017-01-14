@@ -1,4 +1,4 @@
-(: Create a Certificate Template :)
+(: Create a certificate request template :)
 
 xquery version "1.0-ml";
 
@@ -14,6 +14,7 @@ declare variable $stateOrProvinceName as xs:string external;
 declare variable $localityName as xs:string external;
 declare variable $organizationName as xs:string external;
 
+(: Create and insert a X.509 certificate request template :)
 pki:insert-template(
   pki:create-template(
   $templateName, $description,
