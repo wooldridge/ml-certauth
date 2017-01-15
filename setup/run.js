@@ -4,7 +4,7 @@ var config = require('../config'),
     marklogic = require('marklogic');
 
 var db = marklogic.createDatabaseClient({
-  host: 'localhost',
+  host: config.host,
   port: config.database.port,
   user: config.auth.user,
   password: config.auth.pass,
