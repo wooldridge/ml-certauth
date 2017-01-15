@@ -7,7 +7,7 @@ import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki
 
 declare namespace x509 = "http://marklogic.com/xdmp/x509";
 
-declare variable $templateName as xs:string external;
+declare variable $templateID as xs:string external;
 declare variable $description as xs:string external;
 declare variable $countryName as xs:string external;
 declare variable $stateOrProvinceName as xs:string external;
@@ -17,7 +17,7 @@ declare variable $organizationName as xs:string external;
 (: Create and insert a X.509 certificate request template :)
 pki:insert-template(
   pki:create-template(
-  $templateName, $description,
+  $templateID, $description,
   (), (),
   <req xmlns="http://marklogic.com/xdmp/x509">
     <version>0</version>

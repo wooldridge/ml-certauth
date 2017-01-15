@@ -7,7 +7,8 @@ import module "http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy";
 import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki.xqy";
 declare namespace x509 = "http://marklogic.com/xdmp/x509";
 
-declare variable $templateName as xs:string external;
+declare variable $templateID as xs:string external;
+declare variable $hostName as xs:string external;
 declare variable $credentialID as xs:string external;
 declare variable $notAfter as xs:string external;
 
@@ -16,8 +17,8 @@ let $csr-pem :=
   function() {
     (: Create a PEM-encoded X.509 certificate request from a template :)
     pki:generate-certificate-request(
-    pki:get-template-by-name($templateName)/pki:template-id,
-    xdmp:host-name(), (), ())
+    pki:get-template-by-name($templateID)/pki:template-id,
+    $hostName, (), ())
   },
   <options xmlns="xdmp:eval">
     <transaction-mode>update-auto-commit</transaction-mode>
@@ -44,6 +45,7 @@ let $cert-xml :=
   {$csr-xml/x509:publicKey}
   {$csr-xml/x509:v3ext}
   </cert>
+let $tmp := xdmp:log($cert-xml)
 (: Create a PEM-encoded X.509 certificate using the security credential's private key :)
 let $cert-pem :=
   xdmp:x509-certificate-generate(
