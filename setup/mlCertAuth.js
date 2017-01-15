@@ -42,8 +42,8 @@ function createCA(options) {
 }
 
 function createTemplate(options) {
-  var xqueryEval = getScript('createTemplate.xqy');
-  return run(script, options);
+  var script = getScript('createTemplate.xqy');
+  return xqueryEval(script, options);
 }
 
 function createServerCert(options) {
