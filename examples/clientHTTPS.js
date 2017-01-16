@@ -25,7 +25,7 @@ var options2 = {
     path: '/v1/documents?uri=/doc.json',
     method: 'GET',
     ca: fs.readFileSync('../certs/ca.crt'),
-    auth: 'portal:p'
+    auth: 'client:client'
 };
 
 var req = https.request(options1, function(res) {
