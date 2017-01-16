@@ -6,6 +6,5 @@ config.js
 
 *.crt
 *.pem
-*.pem
 *.pfx
 *.p12
