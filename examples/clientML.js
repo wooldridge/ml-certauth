@@ -1,4 +1,4 @@
-var config = require('./config'),
+var config = require('../config'),
     marklogic = require('marklogic'),
     fs = require('fs');
 
@@ -9,10 +9,11 @@ var options1 = {
   port: config.database.port,
   authType: 'certificate',
   ssl: true,
-  ca: fs.readFileSync('certs/ca.crt'),
-  cert: fs.readFileSync('certs/portal.crt'),
-  key:  fs.readFileSync('keys/portalpriv.pem')
-  // pfx: fs.readFileSync('certs/portaltest.pfx'),
+  ca: fs.readFileSync('../certs/ca.crt'),
+  cert: fs.readFileSync('../certs/client.crt'),
+  key:  fs.readFileSync('../keys/clientpriv.pem')
+  // Alternative PKCS12 method
+  // pfx: fs.readFileSync('../certs/clienttest.pfx'),
   // passphrase: 'p'
 };
 
@@ -21,14 +22,15 @@ var options1 = {
 var options2 = {
   host: config.host,
   port: config.database.port,
-  user: 'portal',
-  password: 'portal',
+  user: config.user.name,
+  password: config.user.pass,
   authType: 'digest',
   ssl: true,
-  ca: fs.readFileSync('certs/ca.crt'),
-  cert: fs.readFileSync('certs/portal.crt'),
-  key:  fs.readFileSync('keys/portalpriv.pem')
-  //pfx: fs.readFileSync('certs/portaltest.pfx'),
+  ca: fs.readFileSync('../certs/ca.crt'),
+  cert: fs.readFileSync('../certs/client.crt'),
+  key:  fs.readFileSync('../keys/clientpriv.pem')
+  // Alternative PKCS12 method
+  //pfx: fs.readFileSync('../certs/clienttest.pfx'),
   //passphrase: 'p'
 };
 
@@ -38,11 +40,11 @@ var options2 = {
 var options3 = {
   host: config.host,
   port: config.database.port,
-  user: 'portal',
-  password: 'portal',
+  user: config.user.name,
+  password: config.user.pass,
   authType: 'digest',
   ssl: true,
-  ca: fs.readFileSync('certs/ca.crt')
+  ca: fs.readFileSync('../certs/ca.crt')
 };
 
 var db = marklogic.createDatabaseClient(options1);
