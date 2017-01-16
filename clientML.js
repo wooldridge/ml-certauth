@@ -9,9 +9,11 @@ var options1 = {
   port: config.database.port,
   authType: 'certificate',
   ssl: true,
-  ca: fs.readFileSync('ca.cer'),
-  pfx: fs.readFileSync('portaltest.pfx'),
-  passphrase: 'p'
+  ca: fs.readFileSync('certs/ca.crt'),
+  cert: fs.readFileSync('certs/portal.crt'),
+  key:  fs.readFileSync('keys/portalpriv.pem')
+  // pfx: fs.readFileSync('certs/portaltest.pfx'),
+  // passphrase: 'p'
 };
 
 // authentication != 'certificate'
@@ -23,12 +25,27 @@ var options2 = {
   password: 'portal',
   authType: 'digest',
   ssl: true,
-  ca: fs.readFileSync('ca.cer'),
-  pfx: fs.readFileSync('portaltest.pfx'),
-  passphrase: 'p'
+  ca: fs.readFileSync('certs/ca.crt'),
+  cert: fs.readFileSync('certs/portal.crt'),
+  key:  fs.readFileSync('keys/portalpriv.pem')
+  //pfx: fs.readFileSync('certs/portaltest.pfx'),
+  //passphrase: 'p'
 };
 
-var db = marklogic.createDatabaseClient(options2);
+
+// authentication != 'certificate'
+// require-client-certificate = false
+var options3 = {
+  host: config.host,
+  port: config.database.port,
+  user: 'portal',
+  password: 'portal',
+  authType: 'digest',
+  ssl: true,
+  ca: fs.readFileSync('certs/ca.crt')
+};
+
+var db = marklogic.createDatabaseClient(options1);
 
 db.setLogger('debug');
 
