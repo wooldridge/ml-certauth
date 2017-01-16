@@ -4,6 +4,4 @@ import module namespace pki = "http://marklogic.com/xdmp/pki"
 
 declare variable $templateName as xs:string external;
 
-let $tid := pki:template-get-id(pki:get-template-by-name($templateName))
-
-return pki:delete-template($tid)
+pki:get-template-by-name($templateName)
