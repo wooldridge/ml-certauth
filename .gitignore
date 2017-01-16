@@ -8,3 +8,5 @@ config.js
 *.pem
 *.pfx
 *.p12
+
+notes
