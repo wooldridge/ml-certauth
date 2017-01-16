@@ -1,7 +1,9 @@
 var config = require('./config'),
     fs = require('fs'),
     path = require('path'),
-    spawn = require( 'child_process' ).spawn,
+    spawn = require('child_process').spawn,
+    glob = require('glob'),
+    xml2js = require('xml2js'),
     marklogic = require('marklogic');
 
 var db = marklogic.createDatabaseClient({
@@ -15,8 +17,7 @@ var db = marklogic.createDatabaseClient({
 
 function getScript(script) {
   return fs.readFileSync(
-    process.cwd() + '/scripts/' + script,
-    {encoding: 'utf8'}
+    __dirname + '/scripts/' + script, { encoding: 'utf8' }
   );
 }
 
@@ -35,7 +36,7 @@ function createKeys() {
 function createCA(options) {
   // Save to current directory by default
   if (!options.path) {
-    options.path = path.dirname(require.main.filename) + "/";
+    options.path = __dirname + "/";
   }
   var script = getScript('createCA.xqy');
   return xqueryEval(script, options);
@@ -51,19 +52,19 @@ function createHostCert(options) {
   return xqueryEval(script, options);
 }
 
-function createUserCert(options) {
+function createClientCert(options) {
   // Save to current directory by default
   if (!options.path) {
-    options.path = path.dirname(require.main.filename) + "/";
+    options.path = __dirname + "/";
   }
-  var script = getScript('createUserCert.xqy');
+  var script = getScript('createClientCert.xqy');
   return xqueryEval(script, options);
 }
 
-function createUserPKCS12(options) {
+function createPKCS12(options) {
   // Save to current directory by default
   if (!options.path) {
-    options.path = path.dirname(require.main.filename) + "/";
+    options.path = __dirname + "/";
   }
   var openssl = spawn( 'openssl',
     [ 'pkcs12', '-export',
@@ -99,22 +100,59 @@ function deleteTemplate(options) {
 
 function getHostCert(options) {
   var script = getScript('getHostCert.xqy');
-  return xqueryEval(script, options);
+  return new Promise(function (resolve, reject) {
+    xqueryEval(script, options)
+      .then(function (result) {
+        xml2js.parseString(result[0].value, function (err, result) {
+          resolve(result);
+        });
+      });
+  });
 }
 
-function deleteKeys() {
-  var keysPath = path.dirname(require.main.filename) + "/keys/";
-  var keys = fs.readdirSync(keysPath);
-  var rm = spawn( 'rm',
-      [ '-r', keysPath + 'portalpriv.pem' ] );
-  rm.stdout.on( 'data', data => {
-    console.log( `stdout: ${data}` );
+function getTemplate(options) {
+  var script = getScript('getTemplate.xqy');
+  return new Promise(function (resolve, reject) {
+    xqueryEval(script, options)
+      .then(function (result) {
+        xml2js.parseString(result[0].value, function (err, result) {
+          resolve(result);
+        });
+      });
   });
-  rm.stderr.on( 'data', data => {
-    console.log( `stderr: ${data}` );
+}
+
+function getCredential(options) {
+  var script = getScript('getCredential.xqy');
+  return new Promise(function (resolve, reject) {
+    xqueryEval(script, options)
+      .then(function (result) {
+        xml2js.parseString(result[0].value, function (err, result) {
+          resolve(result);
+        });
+      });
   });
-  rm.on( 'close', code => {
-    console.log( `child process exited with code ${code}` );
+}
+
+function deleteKeyFiles() {
+  //var keysPath = path.dirname(require.main.filename) + "/keys/";
+  var keysPath = __dirname + "/keys/";
+  return new Promise(function (resolve, reject) {
+    glob(keysPath + '*.pem', function(error, keys){
+      keys.forEach(fs.unlinkSync);
+      resolve(keys);
+    });
+  });
+}
+
+function deleteCertFiles() {
+  //var certsPath = path.dirname(require.main.filename) + "/certs/";
+  var certsPath = __dirname + "/certs/";
+  return new Promise(function (resolve, reject) {
+    glob(certsPath + '*(*.crt|*.pfx)', function(error, certs){
+      certs.forEach(fs.unlinkSync);
+      resolve(certs);
+    });
   });
 }
 
@@ -124,12 +162,15 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
       createCA: createCA,
       createTemplate: createTemplate,
       createHostCert: createHostCert,
-      createUserCert: createUserCert,
-      createUserPKCS12: createUserPKCS12,
+      createClientCert: createClientCert,
+      createPKCS12: createPKCS12,
       deleteCert: deleteCert,
       deleteCred: deleteCred,
       deleteTemplate: deleteTemplate,
+      deleteKeyFiles: deleteKeyFiles,
+      deleteCertFiles: deleteCertFiles,
+      getCredential: getCredential,
       getHostCert: getHostCert,
-      deleteKeys: deleteKeys
+      getTemplate: getTemplate
   };
 }
