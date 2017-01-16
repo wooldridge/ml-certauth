@@ -21,9 +21,9 @@ config.security = {
 }
 
 config.user = {
-  name: "portal",
+  name: "client",
   desc: "certificate auth user",
-  pass: "p"
+  pass: "USER_PASSWORD"
 };
 
 config.auth = {
