@@ -48,7 +48,6 @@ let $x509 :=
     <x509:v3ext>
       <x509:basicConstraints critical="false">CA:TRUE</x509:basicConstraints>
       <x509:keyUsage critical="false">Certificate Sign, CRL Sign</x509:keyUsage>
-      <x509:nsCertType critical="false">SSL Server</x509:nsCertType>
       <x509:subjectKeyIdentifier critical="false">{pki:integer-to-hex(xdmp:random())}</x509:subjectKeyIdentifier>
     </x509:v3ext>
   </x509:cert>
