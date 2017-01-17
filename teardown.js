@@ -1,10 +1,14 @@
 var config = require('./config'),
-    rp = require('request-promise');
+    rp = require('request-promise'),
+    https = require('https');
+
+// Mgmt API on port 8002 uses self-signed certs for SSL
+https.globalAgent.options.rejectUnauthorized = false;
 
 function deleteUser() {
   var options = {
     method: 'DELETE',
-    uri: 'http://' + config.host + ':8002/manage/v2/users/' + config.user.name,
+    uri: 'https://' + config.host + ':8002/manage/v2/users/' + config.user.name,
     headers: {
       'Content-Type': 'application/json'
     },
@@ -23,7 +27,7 @@ function deleteUser() {
 function deleteREST() {
   var options = {
     method: 'DELETE',
-    uri: 'http://' + config.host + ':8002/v1/rest-apis/' + config.database.name + "-rest" +
+    uri: 'https://' + config.host + ':8002/v1/rest-apis/' + config.database.name + "-rest" +
          '?include=content&include=modules',
     json: true,
     headers: {
