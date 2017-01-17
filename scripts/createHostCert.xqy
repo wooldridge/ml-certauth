@@ -46,21 +46,13 @@ let $cert-xml :=
   {$csr-xml/x509:publicKey}
   {$csr-xml/x509:v3ext}
   </cert>
-let $key :=
-  if ($credentialID='')
-  then $privkey
-  else ()
-let $options :=
-  if ($credentialID='')
-  then ()
-  else
-    <options xmlns="ssl:options">
-      <credential-id>{xdmp:credential-id($credentialID)}</credential-id>
-    </options>
 (: Create a PEM-encoded X.509 certificate using the security credential's private key :)
 let $cert-pem :=
   xdmp:x509-certificate-generate(
-  $cert-xml, $key, $options)
+  $cert-xml, (),
+    <options xmlns="ssl:options">
+      <credential-id>{xdmp:credential-id($credentialID)}</credential-id>
+    </options>)
 return
   (: Insert the signed certificate into the database :)
   xdmp:invoke-function(
