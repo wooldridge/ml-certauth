@@ -27,17 +27,11 @@ let $csr-pem :=
   </options>)
 (: Get the XML representation of the certificate request :)
 let $csr-xml := xdmp:x509-request-extract($csr-pem)
-let $ca-xml :=
-  (: Get the XML representation of a security credential :)
-  xdmp:x509-certificate-extract(
-  xdmp:credential(xdmp:credential-id($credentialID))
-    /sec:credential-certificate)
 (: Create an XML representation of the certificate :)
 let $cert-xml :=
   <cert xmlns="http://marklogic.com/xdmp/x509">
   <version>2</version>
   <serialNumber>{pki:integer-to-hex(xdmp:random())}</serialNumber>
-  {$ca-xml/x509:issuer}
   <validity>
     <notBefore>{fn:current-dateTime()}</notBefore>
     <notAfter>{fn:current-dateTime() + xs:dayTimeDuration($notAfter)}</notAfter>
