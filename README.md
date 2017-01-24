@@ -5,37 +5,31 @@ Node.js-based tools for certificate-based authentication in MarkLogic.
 ## Background
 
 Information on using certificate authentication with Node.js:
-
 https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#.gxmla9cbi
 
 Information on certificate authorities:
-
 http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
 
 Root certs included with Node.js:
-
 https://github.com/nodejs/node/blob/master/src/node_root_certs.h
 
 OpenSSL Cookbook:
-
 https://www.feistyduck.com/books/openssl-cookbook/
 
 Client and Server Side SSL with NodeJS:
-
 https://vanjakom.wordpress.com/2011/08/11/client-and-server-side-ssl-with-nodejs/
 
 MIT course video on SSL and HTTPS:
-
 https://www.youtube.com/watch?v=S2iBR2ZlZf0
 
 
-## Steps
+## Steps to test
 
 1. Copy `config_sample.js` to `config.js` and edit for your environment (HOSTNAME, USER_PASSWORD, ML_USER, ML_PASSWORD). Create a REST server and database by running:
 
   `node setup.js`
 
-2. In the `examples` directory, excute `createAll.js` to:
+2. In the `examples` directory, execute `createAll.js` to:
 
    - Create a certificate authority and associate security credential
    - Create a certificate template
