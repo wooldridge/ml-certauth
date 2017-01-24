@@ -33,6 +33,19 @@ function createKeys() {
   return xqueryEval(script, {});
 }
 
+/**
+ * Create a certificate authority (CA) and associated security credential
+ * @param {Object} options Config options
+ * @param {string} options.countryName:         "US"
+ * @param {string} options.stateOrProvinceName: "CA"
+ * @param {string} options.localityName:        "San Carlos"
+ * @param {string} options.organizationName:    "Acme Corp"
+ * @param {string} options.commonName:          "Acme Corp CA"
+ * @param {string} options.notAfter:            "P365D"
+ * @param {string} options.credentialID:        "acme-corp"
+ * @param {string} options.credDesc:            "Acme Certificate Authority"
+ * @return {Promise}
+ */
 function createCA(options) {
   // Save to current directory by default
   if (!options.path) {
@@ -42,16 +55,45 @@ function createCA(options) {
   return xqueryEval(script, options);
 }
 
+/**
+ * Create a security template
+ * @param {Object} options Config options
+ * @param {string} options.templateName:        "acme-template"
+ * @param {string} options.description:         "Acme secure credentials"
+ * @param {string} options.countryName:         "US"
+ * @param {string} options.stateOrProvinceName: "California"
+ * @param {string} options.localityName:        "San Carlos"
+ * @param {string} options.organizationName:    "Acme Corp"
+ * @return {Promise}
+ */
 function createTemplate(options) {
   var script = getScript('createTemplate.xqy');
   return xqueryEval(script, options);
 }
 
+/**
+ * Create a signed host certificate based on security credential of CA
+ * @param {Object} options Config options
+ * @param {string} options.templateName: "acme-template"
+ * @param {string} options.hostName:     "example.org"
+ * @param {string} options.credentialID: "acme-corp"
+ * @param {string} options.notAfter:     "P365D"
+ * @return {Promise}
+ */
 function createHostCert(options) {
   var script = getScript('createHostCert.xqy');
   return xqueryEval(script, options);
 }
 
+/**
+ * Create a signed client certificate based on security credential of CA
+ * @param {Object} options Config options
+ * @param {string} options.countryName:  "acme-template"
+ * @param {string} options.commonName:   "someuser"
+ * @param {string} options.credentialID: "acme-corp"
+ * @param {string} options.notAfter:     "P365D"
+ * @return {Promise}
+ */
 function createClientCert(options) {
   // Save to current directory by default
   if (!options.path) {
@@ -61,6 +103,14 @@ function createClientCert(options) {
   return xqueryEval(script, options);
 }
 
+/**
+ * Create a PKCS12 file with client certificate and private key
+ * @param {Object} options Config options
+ * @param {string} options.cert:    "clientpriv.pem"
+ * @param {string} options.privkey: "clientpriv.pem"
+ * @param {string} options.pfx:     "clienttest.pfx"
+ * @return {Promise}
+ */
 function createPKCS12(options) {
   // Save to current directory by default
   if (!options.path) {
@@ -135,7 +185,6 @@ function getCredential(options) {
 }
 
 function deleteKeyFiles() {
-  //var keysPath = path.dirname(require.main.filename) + "/keys/";
   var keysPath = __dirname + "/keys/";
   return new Promise(function (resolve, reject) {
     glob(keysPath + '*.pem', function(error, keys){
