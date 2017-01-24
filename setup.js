@@ -3,12 +3,13 @@ var config = require('./config'),
     fs = require('fs'),
     https = require('https');
 
+// Mgmt API on port 8002 uses self-signed certs for SSL
 https.globalAgent.options.rejectUnauthorized = false;
 
 function createDatabase() {
   var options = {
     method: 'POST',
-    uri: 'https://' + config.host + ':8002/manage/v2/databases',
+    uri: 'http://' + config.host + ':8002/manage/v2/databases',
     body: config.databaseSetup,
     json: true,
     headers: {
@@ -31,7 +32,7 @@ var hostName = '';
 function getHost() {
   var options = {
     method: 'GET',
-    uri: 'https://' + config.host + ':8002/manage/v2/hosts',
+    uri: 'http://' + config.host + ':8002/manage/v2/hosts',
     json: true,
     headers: {
       'Content-Type': 'application/json'
@@ -53,7 +54,7 @@ function createForest(hostName) {
   config.forestSetup["host"] = hostName;
   var options = {
     method: 'POST',
-    uri: 'https://' + config.host + ':8002/manage/v2/forests',
+    uri: 'http://' + config.host + ':8002/manage/v2/forests',
     body: config.forestSetup,
     json: true,
     headers: {
@@ -74,7 +75,7 @@ function createForest(hostName) {
 function createREST() {
   var options = {
     method: 'POST',
-    uri: 'https://' + config.host + ':8002/v1/rest-apis',
+    uri: 'http://' + config.host + ':8002/v1/rest-apis',
     body: config.restSetup,
     json: true,
     headers: {
@@ -133,7 +134,7 @@ var configUser = {
 function createUser() {
   var options = {
     method: 'POST',
-    uri: 'https://' + config.host + ':8002/manage/v2/users',
+    uri: 'http://' + config.host + ':8002/manage/v2/users',
     body: configUser,
     json: true,
     headers: {
