@@ -2,7 +2,7 @@ var certAuth = require('../mlCertAuth');
 
 var optsCA = {
   "countryName": "US",
-  "stateOrProvinceName": "CA",
+  "stateOrProvinceName": "California",
   "localityName": "San Carlos",
   "organizationName": "Acme Corp",
   "commonName": "Acme Corp CA",
@@ -15,7 +15,7 @@ var optsTemplate = {
   "templateName": "acme-template",
   "description": "Acme secure credentials",
   "countryName": "US",
-  "stateOrProvinceName": "CA",
+  "stateOrProvinceName": "California",
   "localityName": "San Carlos",
   "organizationName": "Acme Corp"
 };
