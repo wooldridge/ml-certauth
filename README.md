@@ -4,22 +4,22 @@ Node.js-based tools for certificate-based authentication in MarkLogic.
 
 ## Background
 
-Information on using certificate authentication with Node.js:
+Information on using certificate authentication with Node.js:  
 https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#.gxmla9cbi
 
-Information on certificate authorities:
+Information on certificate authorities:  
 http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
 
-Root certs included with Node.js:
+Root certs included with Node.js:  
 https://github.com/nodejs/node/blob/master/src/node_root_certs.h
 
-OpenSSL Cookbook:
+OpenSSL Cookbook:  
 https://www.feistyduck.com/books/openssl-cookbook/
 
-Client and Server Side SSL with NodeJS:
+Client and Server Side SSL with NodeJS:  
 https://vanjakom.wordpress.com/2011/08/11/client-and-server-side-ssl-with-nodejs/
 
-MIT course video on SSL and HTTPS:
+MIT course video on SSL and HTTPS:  
 https://www.youtube.com/watch?v=S2iBR2ZlZf0
 
 
