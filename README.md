@@ -20,7 +20,7 @@ OpenSSL Cookbook:
 
 https://www.feistyduck.com/books/openssl-cookbook/
 
-Client and Server side SSL with NodeJS:
+Client and Server Side SSL with NodeJS:
 
 https://vanjakom.wordpress.com/2011/08/11/client-and-server-side-ssl-with-nodejs/
 
@@ -31,30 +31,26 @@ https://www.youtube.com/watch?v=S2iBR2ZlZf0
 
 ## Steps
 
-1. Import `CertAuthWorkspace.xml` into QConsole and run the scripts against the Security database to generate a certificate authority, certificates, and keys.
-
-  This configures MarkLogic for certificate authentication. Certificates, private keys, and public keys are saved in the root directory of Marklogic (e.g., on a Mac, ~/Library/MarkLogic) and in the Security database.
-
-2. Create a user named `portal` with a password `p` and appropriate privileges (e.g. `rest-reader`).
-
-3. Generate a PKCS12 file from the private key and certificate of the user using openssl from the root directory:
-
-  `openssl pkcs12 -export -in portal.cer -inkey portalpriv.pkey -out portaltest.pfx`
-
-  You will be prompted for an Export Password. Enter 'p' as the password.
-
-  A `portaltest.pfx` file is saved in the root directory. This packages both the user certificate and private key as a single file.
-
-4. Copy the following files to the `ml-certauth` root folder:
-  ```
-  `ca.cer`
-  `portaltest.pfx`
-  ```
-5. Copy `config_sample.js` to `config.js` and edit for your environment (/PATH/TO/MARKLOGIC/, HOSTNAME, ML_USER, ML_PASSWORD). Create a REST server and database by running:
+1. Copy `config_sample.js` to `config.js` and edit for your environment (HOSTNAME, USER_PASSWORD, ML_USER, ML_PASSWORD). Create a REST server and database by running:
 
   `node setup.js`
 
-6. Turn on certificate authentication for the REST server. In the Admin UI (http://localhost:8001), click Config -> App Servers -> ml-certauth-rest:8565 and configure the following:
+2. In the `examples` directory, excute `createAll.js` to:
+
+   - Create a certificate authority and associate security credential
+   - Create a certificate template
+   - Create a host certificate using the security credential and template
+   - Create a client certificate using the security credential and template
+   ```
+   cd examples
+   node createAll.js
+   ```
+
+3. In the `examples` directory, excute `createPKCS12.js` to create a .pfx file that packages the client certificate and private key and protects it with a passphrase.
+
+   `node createPKCS12.js`
+
+4. Turn on certificate authentication for the REST server. In the Admin UI (http://localhost:8001), click Config -> App Servers -> ml-certauth-rest:8565 and configure the following:
   ```
   authentication: certificate
   ssl certificate template: cred-template
@@ -62,10 +58,10 @@ https://www.youtube.com/watch?v=S2iBR2ZlZf0
   ```
   At the bottom, click Show, click "Acme Corp", and check the checkbox. Click OK to save.
 
-7. Run the following to retrieve a document from the certificate-protected server:
+5. In the `examples` directory,  run the following to retrieve a document from the certificate-protected server:
 
   `node clientML.js`
 
-8. To delete the REST server and database, run the following:
+6. To delete the REST server and database, run the following:
 
   `node teardown.js`
