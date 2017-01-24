@@ -56,7 +56,7 @@ function createCA(options) {
 }
 
 /**
- * Create a security template
+ * Create a certificate template
  * @param {Object} options Config options
  * @param {string} options.templateName:        "acme-template"
  * @param {string} options.description:         "Acme secure credentials"
@@ -88,7 +88,8 @@ function createHostCert(options) {
 /**
  * Create a signed client certificate based on security credential of CA
  * @param {Object} options Config options
- * @param {string} options.countryName:  "acme-template"
+ * @param {string} options.countryName:  "US"
+ * @param {string} options.organizationName:  "Acme Corp"
  * @param {string} options.commonName:   "someuser"
  * @param {string} options.credentialID: "acme-corp"
  * @param {string} options.notAfter:     "P365D"
@@ -104,7 +105,8 @@ function createClientCert(options) {
 }
 
 /**
- * Create a PKCS12 file with client certificate and private key
+ * Create a PKCS12 file with client certificate and private key and
+ * protected by a passphrase
  * @param {Object} options Config options
  * @param {string} options.cert:    "clientpriv.pem"
  * @param {string} options.privkey: "clientpriv.pem"
