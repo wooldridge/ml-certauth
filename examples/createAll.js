@@ -35,6 +35,13 @@ var optsClientCert = {
   "notAfter": "P365D"
 };
 
+var optsPKCS12 = {
+  "passphrase": "p",
+  "cert": "client.crt",
+  "privkey": "clientpriv.pem",
+  "pfx": "clienttest.pfx"
+};
+
 certAuth.createCA(optsCA)
   .then(function (result) {
     console.log('CA created');
@@ -50,6 +57,10 @@ certAuth.createCA(optsCA)
   })
   .then(function (result) {
     console.log('user cert created');
+    return certAuth.createPKCS12(optsPKCS12);
+  })
+  .then(function (result) {
+    console.log('PKCS12 created');
   })
   .catch(function (err) {
     console.log(JSON.stringify(err, null, 2));
