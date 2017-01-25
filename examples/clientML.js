@@ -30,8 +30,8 @@ var options2 = {
   cert: fs.readFileSync('../certs/client.crt'),
   key:  fs.readFileSync('../keys/clientpriv.pem')
   // Alternative PKCS12 method
-  //pfx: fs.readFileSync('../certs/clienttest.pfx'),
-  //passphrase: 'p'
+  // pfx: fs.readFileSync('../certs/clienttest.pfx'),
+  // passphrase: 'p'
 };
 
 

@@ -12,6 +12,7 @@
     "marklogic": "https://github.com/wooldridge/node-client-api#ea4/certauth",
     "request": "^2.75.0",
     "request-promise": "^4.1.1",
+    "sanitize-filename": "^1.6.1",
     "xml2js": "^0.4.17"
   }
 }
