@@ -5,9 +5,6 @@ var config = {};
 
 config.path   = path.dirname(require.main.filename) + "/";
 
-// Path to root directory of MarkLogic, e.g.: "/Users/mary/Library/MarkLogic"
-config.mlpath = "/PATH/TO/MARKLOGIC/"; // include trailing "/"
-
 config.host = "HOSTNAME";
 
 config.database = {
@@ -21,9 +18,9 @@ config.security = {
 }
 
 config.user = {
-  name: "portal",
+  name: "client",
   desc: "certificate auth user",
-  pass: "p"
+  pass: "USER_PASSWORD"
 };
 
 config.auth = {

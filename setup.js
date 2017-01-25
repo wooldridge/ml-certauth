@@ -1,6 +1,10 @@
 var config = require('./config'),
     rp = require('request-promise'),
-    fs = require('fs');
+    fs = require('fs'),
+    https = require('https');
+
+// Mgmt API on port 8002 uses self-signed certs for SSL
+https.globalAgent.options.rejectUnauthorized = false;
 
 function createDatabase() {
   var options = {
@@ -112,10 +116,42 @@ function loadData() {
         loadData();
       } else {
         console.log('Data loaded');
+        createUser()
       }
     })
     .catch(function (err) {
       console.log(JSON.stringify(err, null, 2));
+    });
+}
+
+var configUser = {
+  "user-name": config.user.name,
+  "password": config.user.pass,
+  "description": config.user.desc,
+  "role": [ "rest-reader" ]
+};
+
+function createUser() {
+  var options = {
+    method: 'POST',
+    uri: 'http://' + config.host + ':8002/manage/v2/users',
+    body: configUser,
+    json: true,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    auth: config.auth
+  };
+  rp(options)
+    .then(function (parsedBody) {
+      console.log('User created: ' + config.user.name);
+    })
+    .catch(function (err) {
+      if (err.statusCode === 400) {
+        console.log('error - user ' + config.user.name + ' may already exist')
+      } else {
+        console.log(JSON.stringify(err, null, 2));
+      }
     });
 }
 

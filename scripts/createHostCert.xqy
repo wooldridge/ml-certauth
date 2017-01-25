@@ -8,7 +8,9 @@ import module namespace pki = "http://marklogic.com/xdmp/pki" at "/MarkLogic/pki
 declare namespace x509 = "http://marklogic.com/xdmp/x509";
 
 declare variable $templateName as xs:string external;
+declare variable $hostName as xs:string external;
 declare variable $credentialID as xs:string external;
+declare variable $privkey as xs:string external;
 declare variable $notAfter as xs:string external;
 
 let $csr-pem :=
@@ -17,7 +19,7 @@ let $csr-pem :=
     (: Create a PEM-encoded X.509 certificate request from a template :)
     pki:generate-certificate-request(
     pki:get-template-by-name($templateName)/pki:template-id,
-    xdmp:host-name(), (), ())
+    $hostName, (), ())
   },
   <options xmlns="xdmp:eval">
     <transaction-mode>update-auto-commit</transaction-mode>
@@ -25,17 +27,11 @@ let $csr-pem :=
   </options>)
 (: Get the XML representation of the certificate request :)
 let $csr-xml := xdmp:x509-request-extract($csr-pem)
-let $ca-xml :=
-  (: Get the XML representation of a security credential :)
-  xdmp:x509-certificate-extract(
-  xdmp:credential(xdmp:credential-id($credentialID))
-    /sec:credential-certificate)
 (: Create an XML representation of the certificate :)
 let $cert-xml :=
   <cert xmlns="http://marklogic.com/xdmp/x509">
   <version>2</version>
   <serialNumber>{pki:integer-to-hex(xdmp:random())}</serialNumber>
-  {$ca-xml/x509:issuer}
   <validity>
     <notBefore>{fn:current-dateTime()}</notBefore>
     <notAfter>{fn:current-dateTime() + xs:dayTimeDuration($notAfter)}</notAfter>
@@ -48,9 +44,9 @@ let $cert-xml :=
 let $cert-pem :=
   xdmp:x509-certificate-generate(
   $cert-xml, (),
-  <options xmlns="ssl:options">
-    <credential-id>{xdmp:credential-id($credentialID)}</credential-id>
-  </options>)
+    <options xmlns="ssl:options">
+      <credential-id>{xdmp:credential-id($credentialID)}</credential-id>
+    </options>)
 return
   (: Insert the signed certificate into the database :)
   xdmp:invoke-function(

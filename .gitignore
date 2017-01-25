@@ -4,8 +4,9 @@ node_modules
 
 config.js
 
-*.cer
-*.pkey
+*.crt
 *.pem
 *.pfx
 *.p12
+
+notes
