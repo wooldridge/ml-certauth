@@ -4,6 +4,7 @@ var config = require('./config'),
     spawn = require('child_process').spawn,
     glob = require('glob'),
     xml2js = require('xml2js'),
+    sanitize = require("sanitize-filename"),
     marklogic = require('marklogic');
 
 var db = marklogic.createDatabaseClient({
@@ -108,9 +109,10 @@ function createClientCert(options) {
  * Create a PKCS12 file with client certificate and private key and
  * protected by a passphrase
  * @param {Object} options Config options
- * @param {string} options.cert:    "clientpriv.pem"
- * @param {string} options.privkey: "clientpriv.pem"
- * @param {string} options.pfx:     "clienttest.pfx"
+ * @param {string} options.cert:       "client.crt"
+ * @param {string} options.privkey:    "clientpriv.pem"
+ * @param {string} options.pfx:        "clienttest.pfx"
+ * @param {string} options.passphrase: "s3cr3t"
  * @return {Promise}
  */
 function createPKCS12(options) {
@@ -118,20 +120,26 @@ function createPKCS12(options) {
   if (!options.path) {
     options.path = __dirname + "/";
   }
-  var openssl = spawn( 'openssl',
-    [ 'pkcs12', '-export',
-      '-in', options.path + 'certs/' + options.cert,
-      '-inkey', options.path + 'keys/' + options.privkey,
-      '-out', options.path + 'certs/' + options.pfx ]
-  );
-  openssl.stdout.on( 'data', data => {
-    console.log( `stdout: ${data}` );
-  });
-  openssl.stderr.on( 'data', data => {
-    console.log( `stderr: ${data}` );
-  });
-  openssl.on( 'close', code => {
-    console.log( `child process exited with code ${code}` );
+  var cmdOpts = [ 'pkcs12', '-export',
+    '-in',    options.path + 'certs/' + sanitize(options.cert),
+    '-inkey', options.path + 'keys/'  + sanitize(options.privkey),
+    '-out',   options.path + 'certs/' + sanitize(options.pfx)
+  ];
+  if (options.passphrase) {
+    cmdOpts = cmdOpts.concat(['-passout', 'pass:' + options.passphrase]);
+  }
+  return new Promise(function (resolve, reject) {
+    var openssl = spawn( 'openssl', cmdOpts);
+    openssl.on( 'error', error => {
+      reject(new Error(error.message));
+    });
+    openssl.on( 'exit', code => {
+      if (code !== 0) {
+        reject(new Error(`child process exited with code ${code}`));
+      } else {
+        resolve(`child process exited with code ${code}`);
+      }
+    });
   });
 }
 
