@@ -4,22 +4,22 @@ Node.js-based tools for certificate-based authentication in MarkLogic.
 
 ## Background
 
-Information on using certificate authentication with Node.js:  
+Information on using certificate authentication with Node.js:
 https://engineering.circle.com/https-authorized-certs-with-node-js-315e548354a2#.gxmla9cbi
 
-Information on certificate authorities:  
+Information on certificate authorities:
 http://www.davidpashley.com/articles/becoming-a-x-509-certificate-authority/
 
-Root certs included with Node.js:  
+Root certs included with Node.js:
 https://github.com/nodejs/node/blob/master/src/node_root_certs.h
 
-OpenSSL Cookbook:  
+OpenSSL Cookbook:
 https://www.feistyduck.com/books/openssl-cookbook/
 
-Client and Server Side SSL with NodeJS:  
+Client and Server Side SSL with NodeJS:
 https://vanjakom.wordpress.com/2011/08/11/client-and-server-side-ssl-with-nodejs/
 
-MIT course video on SSL and HTTPS:  
+MIT course video on SSL and HTTPS:
 https://www.youtube.com/watch?v=S2iBR2ZlZf0
 
 
@@ -35,16 +35,14 @@ https://www.youtube.com/watch?v=S2iBR2ZlZf0
    - Create a certificate template
    - Create a host certificate using the security credential and template
    - Create a client certificate using the security credential and template
+   - Create a PKCS12 file that packages the client certificate and its
+     private key and protect the file with a passphrase
    ```
    cd examples
    node createAll.js
    ```
 
-3. In the `examples` directory, excute `createPKCS12.js` to create a .pfx file that packages the client certificate and private key and protects it with a passphrase.
-
-   `node createPKCS12.js`
-
-4. Turn on certificate authentication for the REST server. In the Admin UI (http://localhost:8001), click Config -> App Servers -> ml-certauth-rest:8565 and configure the following:
+3. Turn on certificate authentication for the REST server. In the Admin UI (http://localhost:8001), click Config -> App Servers -> ml-certauth-rest:8565 and configure the following:
   ```
   authentication: certificate
   ssl certificate template: cred-template
@@ -52,10 +50,10 @@ https://www.youtube.com/watch?v=S2iBR2ZlZf0
   ```
   At the bottom, click Show, click "Acme Corp", and check the checkbox. Click OK to save.
 
-5. In the `examples` directory,  run the following to retrieve a document from the certificate-protected server:
+4. In the `examples` directory,  run the following to retrieve a document from the certificate-protected server:
 
   `node clientML.js`
 
-6. To delete the REST server and database, run the following:
+5. To delete the REST server and database, run the following:
 
   `node teardown.js`
